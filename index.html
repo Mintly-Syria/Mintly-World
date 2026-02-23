@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mintly Syria - أسواق المال</title>
+    <title>Mintly World - Financial Tools</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
 
     <style>
         /* === متغيرات الألوان === */
         :root {
-            /* الوضع الفاتح (Light Mode) */
+            /* Light Mode */
             --bg-body: #f0f2f5;
             --bg-card: #ffffff;
             --bg-header: #ffffff;
@@ -29,7 +29,7 @@
             --shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        /* الوضع الداكن (Dark Mode) */
+        /* Dark Mode */
         [data-theme="dark"] {
             --bg-body: #0f0f0f;
             --bg-card: #1a1a1a;
@@ -50,7 +50,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Cairo', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -71,7 +71,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* === الشريط الرئيسي (Header) === */
+        /* === Header === */
         .main-header {
             position: fixed;
             top: 0;
@@ -89,21 +89,19 @@
             transition: background-color 0.3s, border-color 0.3s;
         }
 
-        /* القسم الأيسر (الشعار + النص + زر الوضع) */
         .header-left {
             display: flex;
             align-items: center;
-            gap: 12px; /* تقليل المسافة قليلاً لاستيعاب الصورة الأكبر */
+            gap: 12px;
         }
 
         .header-logo {
-            width: 70px; /* تم التكبير */
-            height: 70px; /* تم التكبير */
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid var(--accent); /* حواف ذهبية */
-            box-shadow: 0 0 20px var(--accent-glow); /* توهج ذهبي */
-            /* تمت إزالة background-color لجعلها شفافة */
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
             cursor: pointer;
             transition: transform 0.3s;
         }
@@ -119,8 +117,14 @@
             display: none; 
         }
         
-        /* زر تبديل الوضع */
-        .theme-toggle {
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 2000;
+        }
+
+        .control-btn {
             background: transparent;
             border: 1px solid var(--border);
             color: var(--text-main);
@@ -134,13 +138,80 @@
             transition: all 0.3s;
             font-size: 1.2rem;
         }
-        .theme-toggle:hover {
+        .control-btn:hover {
             background-color: var(--bg-input);
             border-color: var(--accent);
             color: var(--accent);
         }
+        
+        /* --- Language Selector Styling (Fixed Centered) --- */
+        .lang-select-wrapper {
+            position: relative;
+            user-select: none;
+            width: 40px;
+            height: 40px;
+        }
 
-        /* القائمة اليمنى */
+        .lang-select-trigger {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .lang-select-trigger:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .lang-select-trigger svg { width: 20px; height: 20px; fill: currentColor; }
+
+        .lang-options {
+            position: absolute;
+            top: 55px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            width: 220px;
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 2001;
+            overflow: hidden;
+            padding: 5px;
+        }
+
+        /* Active State */
+        #langWrapper.open .lang-options {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: all;
+            transform: translateX(-50%) scale(1);
+        }
+
+        .lang-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s;
+            margin-bottom: 2px;
+        }
+        .lang-option:last-child { margin-bottom: 0; }
+        .lang-option:hover { background-color: var(--accent-glow); }
+        .lang-option img { width: 24px; height: 16px; border-radius: 2px; object-fit: cover; margin-inline-end: 10px; }
+        .lang-option span { font-size: 0.9rem; font-weight: 600; }
+
         .header-nav {
             display: flex;
             gap: 8px;
@@ -166,7 +237,7 @@
             font-weight: 800;
         }
 
-        /* === الحاوية الرئيسية === */
+        /* === App Container === */
         .app-container {
             width: 100%;
             max-width: 480px;
@@ -197,7 +268,6 @@
             user-select: none;
         }
 
-        /* --- Views --- */
         .view-section {
             display: none;
             flex-direction: column;
@@ -223,7 +293,6 @@
             width: 100%;
         }
         
-        /* --- Currency Styles --- */
         .content-wrapper {
             display: flex;
             flex-direction: column;
@@ -238,7 +307,6 @@
             font-size: 0.8rem;
             margin-bottom: 4px;
             font-weight: 600;
-            padding-right: 5px;
             user-select: none;
         }
 
@@ -259,6 +327,8 @@
             -moz-appearance: textfield;
         }
         
+        [dir="ltr"] .styled-input { text-align: left; }
+
         .styled-input::-webkit-outer-spin-button,
         .styled-input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -269,6 +339,29 @@
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-glow);
         }
+
+        .styled-select {
+            width: 100%;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            color: var(--text-input);
+            padding: 12px 15px; 
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Cairo', sans-serif;
+            outline: none;
+            transition: border-color 0.3s;
+            cursor: pointer;
+        }
+        .styled-select:focus { border-color: var(--accent); }
+
+        .calc-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .calc-row .input-group { flex: 1; margin-bottom: 0; }
 
         .custom-select-wrapper { position: relative; user-select: none; width: 100%; z-index: 100; }
         .custom-select { position: relative; display: flex; flex-direction: column; }
@@ -385,9 +478,12 @@
             background-color: #333;
             pointer-events: none;
         }
+        [dir="ltr"] .flag-icon { margin-left: 0; margin-right: 15px; }
 
         .currency-text { flex: 1; text-align: right; direction: ltr; pointer-events: none;}
-        .ar-name {
+        [dir="ltr"] .currency-text { text-align: left; }
+        
+        .ar-name, .en-name {
             display: block;
             color: var(--text-muted);
             font-size: 0.8em;
@@ -395,6 +491,7 @@
             direction: rtl; 
             text-align: right;
         }
+        [dir="ltr"] .ar-name, [dir="ltr"] .en-name { direction: ltr; text-align: left; }
 
         .swap-row { display: flex; justify-content: center; margin: -5px 0 10px 0; position: relative; z-index: 1; }
         .btn-swap {
@@ -418,7 +515,6 @@
             box-shadow: 0 0 15px var(--accent-glow);
         }
 
-        /* --- Footer Area --- */
         .footer-actions {
             margin-top: 20px; 
         }
@@ -472,7 +568,6 @@
             margin-top: 5px;
         }
 
-        /* --- Metal Styles --- */
         .refresh-btn {
             background: transparent;
             border: 1px solid var(--accent);
@@ -520,7 +615,6 @@
         .price-label { color: var(--text-muted); font-size: 0.9rem; }
         .price-value { font-size: 1rem; color: var(--text-main); }
 
-        /* --- Crypto Styles --- */
         .crypto-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
         .crypto-item {
             background: var(--bg-input);
@@ -553,7 +647,6 @@
         }
         @keyframes blink { 50% { opacity: 0.5; } }
 
-        /* --- Utils --- */
         .loader {
             display: none;
             width: 20px;
@@ -614,47 +707,58 @@
 </head>
 <body>
 
-    <!-- الشريط الرئيسي -->
+    <!-- Header -->
     <header class="main-header">
-        <!-- القسم الأيسر (الشعار والن وزر الوضع) -->
         <div class="header-left">
             <img src="https://i.postimg.cc/SKQnQvN0/f178c888-f04a-4103-832e-d9c0e717cc2d.png" class="header-logo" alt="Mintly Logo" onclick="switchView('home', document.querySelector('.nav-btn'))">
             <span class="brand-text">Mintly World</span>
         </div>
         
-        <!-- القائمة الرئيسية -->
         <nav class="header-nav">
-            <button class="nav-btn active" onclick="switchView('home', this)">عملات</button>
-            <button class="nav-btn" onclick="switchView('gold', this)">الذهب</button>
-            <button class="nav-btn" onclick="switchView('crypto', this)">الرقمية</button>
+            <button class="nav-btn active" data-i18n="nav_currencies" onclick="switchView('home', this)">عملات</button>
+            <button class="nav-btn" data-i18n="nav_gold" onclick="switchView('gold', this)">الذهب</button>
+            <button class="nav-btn" data-i18n="nav_crypto" onclick="switchView('crypto', this)">الرقمية</button>
         </nav>
 
-        <!-- زر تبديل الوضع -->
-        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-            <span id="themeIcon">☀️</span>
-        </button>
+        <div class="header-controls">
+            <!-- Language Selector (Fixed Centered) -->
+            <div class="lang-select-wrapper" id="langWrapper">
+                <div class="lang-select-trigger" id="langTrigger">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 19.93C7.05 19.44 4 16.08 4 12C4 11.38 4.08 10.79 4.21 10.21L9 15V16C9 17.1 9.9 18 11 18V19.93ZM17.9 17.39C17.64 16.8 16.9 16 16 16H15V13C15 12.45 14.55 12 14 12H8V10H10C10.55 10 11 9.55 11 9V7H13C14.1 7 15 6.1 15 5V4.59C17.93 5.78 20 8.65 20 12C20 14.08 19.2 15.97 17.9 17.39Z"/>
+                    </svg>
+                </div>
+                <div class="lang-options" id="langOptions">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <button class="control-btn" id="themeToggle" onclick="toggleTheme()">
+                <span id="themeIcon">☀️</span>
+            </button>
+        </div>
     </header>
 
-    <!-- الحاوية الرئيسية -->
+    <!-- App Container -->
     <div class="app-container">
 
-        <!-- القسم 1: المحول -->
+        <!-- View 1: Converter -->
         <div id="view-home" class="view-section active-view">
-            <h1>محول العملات</h1>
+            <h1 data-i18n="title_converter">محول العملات</h1>
             
             <div class="scrollable-area">
                 <div class="content-wrapper">
                     <div class="input-group">
-                        <label>المبلغ (Amount)</label>
+                        <label data-i18n="label_amount">المبلغ (Amount)</label>
                         <input type="number" id="amount" class="styled-input" value="1" placeholder="0.00" lang="en" inputmode="decimal">
                     </div>
 
                     <div class="input-group">
-                        <label>من (From)</label>
+                        <label data-i18n="label_from">من (From)</label>
                         <div class="custom-select-wrapper">
                             <div class="custom-select" id="fromSelect">
                                 <div class="custom-select__trigger">
-                                    <span>اختر العملة</span>
+                                    <span data-i18n="select_currency">اختر العملة</span>
                                     <span class="arrow">▼</span>
                                 </div>
                                 <div class="custom-options"></div>
@@ -667,11 +771,11 @@
                     </div>
 
                     <div class="input-group">
-                        <label>إلى (To)</label>
+                        <label data-i18n="label_to">إلى (To)</label>
                         <div class="custom-select-wrapper">
                             <div class="custom-select" id="toSelect">
                                 <div class="custom-select__trigger">
-                                    <span>اختر العملة</span>
+                                    <span data-i18n="select_currency">اختر العملة</span>
                                     <span class="arrow">▼</span>
                                 </div>
                                 <div class="custom-options"></div>
@@ -683,7 +787,7 @@
 
             <div class="footer-actions">
                 <button class="btn-convert" id="convertBtn">
-                    <span class="btn-text">تحويل</span>
+                    <span class="btn-text" data-i18n="btn_convert">تحويل</span>
                     <div class="loader" id="loader"></div>
                 </button>
 
@@ -694,91 +798,134 @@
             </div>
         </div>
 
-        <!-- القسم 2: الذهب والفضة -->
+        <!-- View 2: Gold -->
         <div id="view-gold" class="view-section">
             <div style="display:flex; flex-direction:column; width:100%;">
                 <div style="flex-shrink: 0;">
-                    <h1>أسعار المعادن</h1>
+                    <h1 data-i18n="title_metals">أسعار المعادن</h1>
                     
                     <button class="refresh-btn" onclick="fetchGoldAndSilver()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                        <span>تحديث الآن</span>
+                        <span data-i18n="btn_refresh">تحديث الآن</span>
                     </button>
                 </div>
 
                 <div id="gold-loader-container" class="section-loader" style="display:none">
                     <div class="loader" style="display:block; border-top-color:var(--accent); border-color:rgba(212, 160, 23, 0.3);"></div>
-                    <div style="margin-right:10px">جاري تحميل   ...</div>
+                    <div style="margin: 0 10px" data-i18n="loading">جاري تحميل...</div>
                 </div>
 
                 <div class="scrollable-area">
-                    <div id="gold-content">
-                        <!-- قسم الذهب -->
+                    <div id="gold-content" style="display:none;">
+                        
+                        <div class="metal-card gold" style="border-color: var(--accent);">
+                            <div class="metal-title" data-i18n="title_calc">حاسبة قيمة الذهب</div>
+                            
+                            <div class="calc-row">
+                                <div class="input-group">
+                                    <label data-i18n="label_weight">الوزن (غرام)</label>
+                                    <input type="number" id="calc-weight" class="styled-input" placeholder="10" inputmode="decimal">
+                                </div>
+                                <div class="input-group">
+                                    <label data-i18n="label_karat">العيار</label>
+                                    <select id="calc-karat" class="styled-select">
+                                        <option value="24">24K</option>
+                                        <option value="22" selected>22K</option>
+                                        <option value="21">21K</option>
+                                        <option value="18">18K</option>
+                                        <option value="14">14K</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label data-i18n="label_currency">العملة</label>
+                                <div class="custom-select-wrapper">
+                                    <div class="custom-select" id="calcCurrencySelect">
+                                        <div class="custom-select__trigger">
+                                            <span data-i18n="select_currency">اختر العملة</span>
+                                            <span class="arrow">▼</span>
+                                        </div>
+                                        <div class="custom-options"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn-convert" onclick="calculateGoldValue()" style="margin-top:15px;">
+                                <span class="btn-text" data-i18n="btn_calc">احسب السعر</span>
+                            </button>
+
+                            <div class="result-box" id="calc-result-box" style="margin-top:15px; border-top:none; padding-top:5px;">
+                                <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:5px;" data-i18n="label_approx">القيمة التقريبية:</div>
+                                <div class="result-amount" id="calc-result-amount" lang="en">0.00</div>
+                                <div class="rate-display" id="calc-currency-label" style="margin-top:5px;">---</div>
+                            </div>
+                        </div>
+
                         <div class="metal-card gold">
                             <div class="metal-icon">🥇</div>
-                            <div class="metal-title">الذهب (Gold)</div>
+                            <div class="metal-title" data-i18n="market_prices">أسعار السوق العالمية</div>
                             
                             <div class="price-row">
-                                <span class="price-label">أونصة (دولار)</span>
+                                <span class="price-label" data-i18n="ounce_usd">أونصة (دولار)</span>
                                 <span class="price-value" id="gold-ounce-usd">---</span>
                             </div>
                             <div class="price-row">
-                                <span class="price-label">غرام 24 (دولار)</span>
+                                <span class="price-label" data-i18n="gram_24_usd">غرام 24 (دولار)</span>
                                 <span class="price-value" id="gold-gram-usd">---</span>
                             </div>
                             <div class="price-row" style="margin-top:5px; border-top:1px dashed var(--border); padding-top:5px;">
-                                <span class="price-label">أونصة (ليرة سورية)</span>
+                                <span class="price-label" data-i18n="ounce_syp">أونصة (ليرة سورية)</span>
                                 <span class="price-value" id="gold-ounce-syp" style="color:var(--accent)">---</span>
                             </div>
                             <div class="price-row">
-                                <span class="price-label">غرام 21 (ليرة سورية)</span>
+                                <span class="price-label" data-i18n="gram_21_syp">غرام 21 (ليرة سورية)</span>
                                 <span class="price-value" id="gold-21-syp" style="color:var(--accent)">---</span>
                             </div>
                         </div>
 
-                        <!-- قسم الفضة -->
                         <div class="metal-card silver">
                             <div class="metal-icon">🥈</div>
-                            <div class="metal-title">الفضة (Silver)</div>
+                            <div class="metal-title" data-i18n="silver_title">الفضة (Silver)</div>
                             
                             <div class="price-row">
-                                <span class="price-label">أونصة (دولار)</span>
+                                <span class="price-label" data-i18n="ounce_usd">أونصة (دولار)</span>
                                 <span class="price-value" id="silver-ounce-usd">---</span>
                             </div>
                             <div class="price-row">
-                                <span class="price-label">غرام (دولار)</span>
+                                <span class="price-label" data-i18n="gram_usd">غرام (دولار)</span>
                                 <span class="price-value" id="silver-gram-usd">---</span>
                             </div>
                         </div>
                         
                         <p style="text-align:center; font-size:0.7rem; color:var(--text-muted); margin-top:20px; line-height:1.6; padding-bottom: 20px;">
-                            * الأسعار تُجلب من مصادر دقيقة.<br>
+                            * <span data-i18n="disclaimer">الأسعار تُجلب من مصادر دقيقة.</span><br>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- القسم 3: العملات الرقمية -->
+        <!-- View 3: Crypto -->
         <div id="view-crypto" class="view-section">
             <div style="display:flex; flex-direction:column; width:100%;">
                 <div style="flex-shrink: 0;">
-                    <h1>العملات الرقمية</h1>
+                    <h1 data-i18n="nav_crypto">العملات الرقمية</h1>
                     
                     <div class="live-indicator" style="display:none" id="crypto-live-indicator">
                         <div style="width:8px; height:8px; background:#0f0; border-radius:50%"></div>
-                        <span>الأسعار تتحدث تلقائياً</span>
+                        <span data-i18n="live_prices">الأسعار تتحدث تلقائياً</span>
                     </div>
 
                     <div id="crypto-loader-container" class="section-loader" style="display:none">
                         <div class="loader" style="display:block; border-top-color:var(--accent); border-color:rgba(212, 160, 23, 0.3);"></div>
-                        <div style="margin-right:10px">جاري التحميل ...</div>
+                        <div style="margin: 0 10px" data-i18n="loading">جاري التحميل ...</div>
                     </div>
                 </div>
 
                 <div class="scrollable-area">
                     <div class="crypto-list" id="cryptoListContainer">
-                        <div style="text-align:center; padding:20px; color:var(--text-muted);"> جاري تحميل البيانات... </div>
+                        <div style="text-align:center; padding:20px; color:var(--text-muted);" data-i18n="loading"> جاري تحميل البيانات... </div>
                     </div>
                 </div>
             </div>
@@ -786,15 +933,249 @@
 
     </div>
 
-    <div class="toast" id="toast">رسالة تنبيه</div>
+    <div class="toast" id="toast">Alert Message</div>
 
     <script>
-        // === التحقق من الوضع المحفوظ ===
+        // === Supported Languages ===
+        const supportedLanguages = {
+            ar: { name: "العربية", flag: "sa" },
+            en: { name: "English", flag: "us" },
+            es: { name: "Español", flag: "es" },
+            fr: { name: "Français", flag: "fr" },
+            de: { name: "Deutsch", flag: "de" },
+            zh: { name: "中文", flag: "cn" },
+            ja: { name: "日本語", flag: "jp" },
+            ru: { name: "Русский", flag: "ru" },
+            pt: { name: "Português", flag: "pt" },
+            hi: { name: "हिन्दी", flag: "in" },
+            it: { name: "Italiano", flag: "it" }
+        };
+
+        // === Full Translations ===
+        const translations = {
+            ar: {
+                nav_currencies: "عملات", nav_gold: "الذهب", nav_crypto: "الرقمية",
+                title_converter: "محول العملات", label_amount: "المبلغ (Amount)",
+                select_currency: "اختر العملة", label_from: "من (From)", label_to: "إلى (To)",
+                btn_convert: "تحويل", title_metals: "أسعار المعادن", btn_refresh: "تحديث الآن",
+                loading: "جاري التحميل...", title_calc: "حاسبة قيمة الذهب",
+                label_weight: "الوزن (غرام)", label_karat: "العيار", label_currency: "العملة",
+                btn_calc: "احسب السعر", label_approx: "القيمة التقريبية:",
+                market_prices: "أسعار السوق العالمية", ounce_usd: "أونصة (دولار)",
+                gram_24_usd: "غرام 24 (دولار)", ounce_syp: "أونصة (ليرة سورية)",
+                gram_21_syp: "غرام 21 (ليرة سورية)", silver_title: "الفضة (Silver)",
+                gram_usd: "غرام (دولار)", disclaimer: "الأسعار تُجلب من مصادر دقيقة.",
+                live_prices: "الأسعار تتحدث تلقائياً"
+            },
+            en: {
+                nav_currencies: "Currencies", nav_gold: "Gold", nav_crypto: "Crypto",
+                title_converter: "Currency Converter", label_amount: "Amount",
+                select_currency: "Select Currency", label_from: "From", label_to: "To",
+                btn_convert: "Convert", title_metals: "Metal Prices", btn_refresh: "Refresh Now",
+                loading: "Loading...", title_calc: "Gold Value Calculator",
+                label_weight: "Weight (Grams)", label_karat: "Karat", label_currency: "Currency",
+                btn_calc: "Calculate", label_approx: "Approx. Value:",
+                market_prices: "Global Market Prices", ounce_usd: "Ounce (USD)",
+                gram_24_usd: "Gram 24 (USD)", ounce_syp: "Ounce (SYP)",
+                gram_21_syp: "Gram 21 (SYP)", silver_title: "Silver",
+                gram_usd: "Gram (USD)", disclaimer: "Prices are fetched from reliable sources.",
+                live_prices: "Live Prices Updating"
+            },
+            es: {
+                nav_currencies: "Monedas", nav_gold: "Oro", nav_crypto: "Cripto",
+                title_converter: "Conversor de Divisas", label_amount: "Cantidad",
+                select_currency: "Seleccionar Moneda", label_from: "De", label_to: "A",
+                btn_convert: "Convertir", title_metals: "Precios de Metales", btn_refresh: "Actualizar",
+                loading: "Cargando...", title_calc: "Calculadora de Oro",
+                label_weight: "Peso (Gramos)", label_karat: "Quilates", label_currency: "Moneda",
+                btn_calc: "Calcular", label_approx: "Valor Aprox:",
+                market_prices: "Precios Globales", ounce_usd: "Onza (USD)",
+                gram_24_usd: "Gramo 24 (USD)", ounce_syp: "Onza (SYP)",
+                gram_21_syp: "Gramo 21 (SYP)", silver_title: "Plata",
+                gram_usd: "Gramo (USD)", disclaimer: "Los precios se obtienen de fuentes fiables.",
+                live_prices: "Actualización en vivo"
+            },
+            fr: {
+                nav_currencies: "Devises", nav_gold: "Or", nav_crypto: "Crypto",
+                title_converter: "Convertisseur de Devises", label_amount: "Montant",
+                select_currency: "Sélectionner Devise", label_from: "De", label_to: "À",
+                btn_convert: "Convertir", title_metals: "Prix des Métaux", btn_refresh: "Actualiser",
+                loading: "Chargement...", title_calc: "Calculateur d'Or",
+                label_weight: "Poids (Grammes)", label_karat: "Carat", label_currency: "Devise",
+                btn_calc: "Calculer", label_approx: "Valeur Approx:",
+                market_prices: "Prix Mondiaux", ounce_usd: "Once (USD)",
+                gram_24_usd: "Gramme 24 (USD)", ounce_syp: "Once (SYP)",
+                gram_21_syp: "Gramme 21 (SYP)", silver_title: "Argent",
+                gram_usd: "Gramme (USD)", disclaimer: "Les prix proviennent de sources fiables.",
+                live_prices: "Mise à jour en direct"
+            },
+            de: {
+                nav_currencies: "Währungen", nav_gold: "Gold", nav_crypto: "Krypto",
+                title_converter: "Währungsrechner", label_amount: "Betrag",
+                select_currency: "Währung wählen", label_from: "Von", label_to: "Nach",
+                btn_convert: "Umrechnen", title_metals: "Edelmetallpreise", btn_refresh: "Aktualisieren",
+                loading: "Laden...", title_calc: "Goldrechner",
+                label_weight: "Gewicht (Gramm)", label_karat: "Karat", label_currency: "Währung",
+                btn_calc: "Berechnen", label_approx: "Ungefährer Wert:",
+                market_prices: "Weltmarktpreise", ounce_usd: "Unze (USD)",
+                gram_24_usd: "Gramm 24 (USD)", ounce_syp: "Unze (SYP)",
+                gram_21_syp: "Gramm 21 (SYP)", silver_title: "Silber",
+                gram_usd: "Gramm (USD)", disclaimer: "Preise werden von zuverlässigen Quellen bezogen.",
+                live_prices: "Live-Aktualisierung"
+            },
+            zh: {
+                nav_currencies: "货币", nav_gold: "黄金", nav_crypto: "加密货币",
+                title_converter: "货币转换器", label_amount: "金额",
+                select_currency: "选择货币", label_from: "从", label_to: "到",
+                btn_convert: "转换", title_metals: "金属价格", btn_refresh: "立即刷新",
+                loading: "加载中...", title_calc: "黄金价值计算器",
+                label_weight: "重量（克）", label_karat: "纯度", label_currency: "货币",
+                btn_calc: "计算", label_approx: "估算值:",
+                market_prices: "全球市场价格", ounce_usd: "盎司（美元）",
+                gram_24_usd: "克 24（美元）", ounce_syp: "盎司（叙利亚镑）",
+                gram_21_syp: "克 21（叙利亚镑）", silver_title: "白银",
+                gram_usd: "克（美元）", disclaimer: "价格取自可靠来源。",
+                live_prices: "实时价格更新"
+            },
+            ja: {
+                nav_currencies: "通貨", nav_gold: "金", nav_crypto: "暗号資産",
+                title_converter: "通貨コンバーター", label_amount: "金額",
+                select_currency: "通貨を選択", label_from: "から", label_to: "へ",
+                btn_convert: "変換", title_metals: "貴金属価格", btn_refresh: "今すぐ更新",
+                loading: "読み込み中...", title_calc: "ゴールド価値計算機",
+                label_weight: "重さ（グラム）", label_karat: "カラット", label_currency: "通貨",
+                btn_calc: "計算する", label_approx: "概算価値:",
+                market_prices: "世界市場価格", ounce_usd: "オンス (USD)",
+                gram_24_usd: "グラム 24 (USD)", ounce_syp: "オンス (SYP)",
+                gram_21_syp: "グラム 21 (SYP)", silver_title: "シルバー",
+                gram_usd: "グラム (USD)", disclaimer: "価格は信頼できるソースから取得されます。",
+                live_prices: "リアルタイム更新"
+            },
+            ru: {
+                nav_currencies: "Валюты", nav_gold: "Золото", nav_crypto: "Крипто",
+                title_converter: "Конвертер валют", label_amount: "Сумма",
+                select_currency: "Выберите валюту", label_from: "От", label_to: "В",
+                btn_convert: "Конвертировать", title_metals: "Цены на металлы", btn_refresh: "Обновить",
+                loading: "Загрузка...", title_calc: "Калькулятор золота",
+                label_weight: "Вес (граммы)", label_karat: "Проба", label_currency: "Валюта",
+                btn_calc: "Рассчитать", label_approx: "Примерная стоимость:",
+                market_prices: "Мировые рыночные цены", ounce_usd: "Унция (USD)",
+                gram_24_usd: "Грамм 24 (USD)", ounce_syp: "Унция (SYP)",
+                gram_21_syp: "Грамм 21 (SYP)", silver_title: "Серебро",
+                gram_usd: "Грамм (USD)", disclaimer: "Цены берутся из надежных источников.",
+                live_prices: "Обновление в реальном времени"
+            },
+            pt: {
+                nav_currencies: "Moedas", nav_gold: "Ouro", nav_crypto: "Cripto",
+                title_converter: "Conversor de Moedas", label_amount: "Quantidade",
+                select_currency: "Selecione Moeda", label_from: "De", label_to: "Para",
+                btn_convert: "Converter", title_metals: "Preços de Metais", btn_refresh: "Atualizar",
+                loading: "Carregando...", title_calc: "Calculadora de Ouro",
+                label_weight: "Peso (Gramas)", label_karat: "Quilates", label_currency: "Moeda",
+                btn_calc: "Calcular", label_approx: "Valor Aprox:",
+                market_prices: "Preços Globais", ounce_usd: "Onça (USD)",
+                gram_24_usd: "Grama 24 (USD)", ounce_syp: "Onça (SYP)",
+                gram_21_syp: "Grama 21 (SYP)", silver_title: "Prata",
+                gram_usd: "Grama (USD)", disclaimer: "Os preços são obtidos de fontes confiáveis.",
+                live_prices: "Atualização ao vivo"
+            },
+            hi: {
+                nav_currencies: "मुद्राएं", nav_gold: "सोना", nav_crypto: "क्रिप्टो",
+                title_converter: "मुद्रा परिवर्तक", label_amount: "राशि",
+                select_currency: "मुद्रा चुनें", label_from: "से", label_to: "के लिए",
+                btn_convert: "परिवर्तित करें", title_metals: "धातुओं की कीमतें", btn_refresh: "अभी अपडेट करें",
+                loading: "लोड हो रहा है...", title_calc: "सोना मूल्यांकन",
+                label_weight: "वजन (ग्राम)", label_karat: "कैरेट", label_currency: "मुद्रा",
+                btn_calc: "गणना करें", label_approx: "अनुमानित मूल्य:",
+                market_prices: "वैश्विक बाजार कीमतें", ounce_usd: "औंस (USD)",
+                gram_24_usd: "ग्राम 24 (USD)", ounce_syp: "औंस (SYP)",
+                gram_21_syp: "ग्राम 21 (SYP)", silver_title: "चांदी",
+                gram_usd: "ग्राम (USD)", disclaimer: "कीमतें विश्वसनीय स्रोतों से ली गई हैं।",
+                live_prices: "लाइव अपडेट"
+            },
+            it: {
+                nav_currencies: "Valute", nav_gold: "Oro", nav_crypto: "Cripto",
+                title_converter: "Convertitore di Valuta", label_amount: "Importo",
+                select_currency: "Seleziona Valuta", label_from: "Da", label_to: "A",
+                btn_convert: "Converti", title_metals: "Prezzi dei Metalli", btn_refresh: "Aggiorna",
+                loading: "Caricamento...", title_calc: "Calcolatore Oro",
+                label_weight: "Peso (Grammi)", label_karat: "Carati", label_currency: "Valuta",
+                btn_calc: "Calcola", label_approx: "Valore Approssimativo:",
+                market_prices: "Prezzi di Mercato Globali", ounce_usd: "Oncia (USD)",
+                gram_24_usd: "Grammo 24 (USD)", ounce_syp: "Oncia (SYP)",
+                gram_21_syp: "Grammo 21 (SYP)", silver_title: "Argento",
+                gram_usd: "Grammo (USD)", disclaimer: "I prezzi vengono recuperati da fonti affidabili.",
+                live_prices: "Aggiornamento dal vivo"
+            }
+        };
+
+        let currentLang = localStorage.getItem('appLang') || navigator.language.split('-')[0] || 'ar';
+        if (!translations[currentLang]) currentLang = 'en';
+
+        // === Language Logic ===
+        function initLanguageSelector() {
+            const container = document.getElementById('langOptions');
+            let html = '';
+            for (const [code, data] of Object.entries(supportedLanguages)) {
+                html += `
+                <div class="lang-option" onclick="setLanguage('${code}')">
+                    <img src="https://flagcdn.com/w40/${data.flag}.png" alt="${data.flag}">
+                    <span>${data.name}</span>
+                </div>`;
+            }
+            container.innerHTML = html;
+
+            const trigger = document.getElementById('langTrigger');
+            const wrapper = document.getElementById('langWrapper');
+            
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                wrapper.classList.toggle('open');
+            });
+            
+            window.addEventListener('click', () => {
+                wrapper.classList.remove('open');
+            });
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('appLang', lang);
+            applyLanguage(currentLang);
+            
+            const savedFrom = selectedFrom;
+            const savedTo = selectedTo;
+            const savedCalc = selectedCalcCurrency;
+
+            if(currencyList && Object.keys(currencyList).length > 0) {
+                initCustomSelects(currencyList);
+                initCalcCurrencySelect(currencyList);
+                
+                setTimeout(() => {
+                    selectOption('fromSelect', savedFrom);
+                    selectOption('toSelect', savedTo);
+                    selectOption('calcCurrencySelect', savedCalc);
+                }, 50);
+            }
+        }
+
+        function applyLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            
+            const activeTrans = translations[lang] || translations['en'];
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (activeTrans[key]) el.textContent = activeTrans[key];
+            });
+        }
+
+        // === Theme ===
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
         updateThemeIcon(savedTheme);
 
-        // === تبديل الوضع ===
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -805,35 +1186,23 @@
 
         function updateThemeIcon(theme) {
             const iconSpan = document.getElementById('themeIcon');
-            if (theme === 'dark') {
-                iconSpan.textContent = '🌙';
-            } else {
-                iconSpan.textContent = '☀️';
-            }
+            iconSpan.textContent = theme === 'dark' ? '🌙' : '☀️';
         }
 
-        // === APIs ===
+        // === Data & APIs ===
         const API_ENDPOINTS = [
             "https://api.exchangerate-api.com/v4/latest/", 
             "https://open.er-api.com/v6/latest/"
         ];
 
         let selectedFrom = 'USD';
-        let selectedTo = 'EUR'; 
+        let selectedTo = 'EUR';
+        let selectedCalcCurrency = 'SYP'; 
         let cachedRates = {}; 
         let sypRate = 0; 
         let cryptoInterval = null;
-
-        // DOM Elements
-        const amountInput = document.getElementById('amount');
-        const convertBtn = document.getElementById('convertBtn');
-        const swapBtn = document.getElementById('swapBtn');
-        const loader = document.getElementById('loader');
-        const btnText = document.querySelector('.btn-text');
-        const resultBox = document.getElementById('resultBox');
-        const resultAmount = document.getElementById('resultAmount');
-        const rateDisplay = document.getElementById('rateDisplay');
-        const toast = document.getElementById('toast');
+        let currentGoldPriceUsdPerGram = 0;
+        let currencyList = {}; 
 
         const arabicNames = {
             AED: "درهم إماراتي", AFN: "أفغاني", ALL: "ليك ألباني", AMD: "درام أرميني", ANG: "جيلدر هولندي", AOA: "كوانزا أنغولي", ARS: "بيزو أرجنتيني", AUD: "دولار أسترالي", AWG: "جيلدر أروبي", AZN: "مانات أذربيجاني",
@@ -862,17 +1231,24 @@
             ZAR: "راند جنوب أفريقي", ZMW: "كواشا زامبي", ZWL: "دولار زيمبابوي"
         };
 
+        const amountInput = document.getElementById('amount');
+        const convertBtn = document.getElementById('convertBtn');
+        const swapBtn = document.getElementById('swapBtn');
+        const loader = document.getElementById('loader');
+        const btnText = document.querySelector('#convertBtn .btn-text');
+        const resultBox = document.getElementById('resultBox');
+        const resultAmount = document.getElementById('resultAmount');
+        const rateDisplay = document.getElementById('rateDisplay');
+        const toast = document.getElementById('toast');
+
         async function fetchRatesWithFallback(baseCurrency) {
             for (const apiUrl of API_ENDPOINTS) {
                 try {
                     const response = await fetch(`${apiUrl}${baseCurrency}`, { cache: 'no-store' });
                     if (!response.ok) throw new Error("Network response was not ok");
                     const data = await response.json();
-                    if (data.rates) {
-                        return data.rates;
-                    }
+                    if (data.rates) return data.rates;
                 } catch (error) {
-                    console.warn(`API Error from ${apiUrl}, trying next...`);
                     continue;
                 }
             }
@@ -891,22 +1267,19 @@
 
             document.getElementById(`view-${viewName}`).classList.add('active-view');
             
-            if(btnElement) {
-                btnElement.classList.add('active');
-            } else {
+            if(btnElement) btnElement.classList.add('active');
+            else {
                 const index = ['home', 'gold', 'crypto'].indexOf(viewName);
                 if(index >= 0) document.querySelectorAll('.nav-btn')[index].classList.add('active');
             }
 
-            if(viewName === 'gold') {
-                fetchGoldAndSilver();
-            }
-            if(viewName === 'crypto') {
-                initCrypto();
-            }
+            if(viewName === 'gold') fetchGoldAndSilver();
+            if(viewName === 'crypto') initCrypto();
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
+            initLanguageSelector(); 
+            applyLanguage(currentLang); 
             await initCurrencies();
             
             convertBtn.addEventListener('click', performConvert);
@@ -924,7 +1297,6 @@
         });
 
         async function initCurrencies() {
-            let currencyList = {};
             try {
                 const rates = await fetchRatesWithFallback('USD');
                 if (rates) {
@@ -932,56 +1304,64 @@
                     cachedRates = rates;
                     sypRate = rates['SYP'];
                     initCustomSelects(currencyList);
-                } else {
-                    throw new Error("All APIs failed");
-                }
+                    initCalcCurrencySelect(currencyList);
+                } else throw new Error("All APIs failed");
             } catch (e) {
-                showToast("فشل تحميل قائمة العملات");
+                showToast(translations[currentLang]?.loading || "Error");
             }
         }
 
-        function initCustomSelects(currencies) {
-            const codes = Object.keys(currencies).filter(code => code !== 'ILS').sort();
+        function getIconUrl(code) {
+            if (['XAU','XAG','BTC','ETH','XDR','XAF','XOF','XCD','XPF'].includes(code)) return 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+            if (code === 'ANG') return 'https://flagcdn.com/w40/nl.png';
+            return `https://flagcdn.com/w40/${code.substring(0, 2).toLowerCase()}.png`;
+        }
+
+        function createListHTML() {
+            let closeBtn = `<div class="close-modal">✕ ${currentLang==='ar'?'إغلاق':'Close'}</div>`;
+            let searchHTML = `<div class="currency-search-container"><input type="text" class="currency-search" placeholder="${currentLang === 'ar' ? 'بحث...' : 'Search...'}"></div>`;
             
-            const getIconUrl = (code) => {
-                if (code === 'XAU') return 'https://cdn-icons-png.flaticon.com/512/6146/6146333.png';
-                if (code === 'XAG') return 'https://cdn-icons-png.flaticon.com/512/6146/6146332.png';
-                if (code === 'BTC') return 'https://assets.coincap.io/assets/icons/btc@2x.png';
-                if (code === 'ETH') return 'https://assets.coincap.io/assets/icons/eth@2x.png';
-                if (code === 'XDR') return 'https://cdn-icons-png.flaticon.com/512/3550/3550317.png';
-                if (code === 'XAF' || code === 'XOF' || code === 'XCD' || code === 'XPF') return 'https://cdn-icons-png.flaticon.com/512/2693/2693502.png';
-                if (code.startsWith('X') && code !== 'XXX') return 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
-                if (code === 'ANG') return 'https://flagcdn.com/w40/nl.png';
-                const countryCode = code.substring(0, 2).toLowerCase();
-                return `https://flagcdn.com/w40/${countryCode}.png`;
-            };
-
-            const createListHTML = () => {
-                let closeBtn = `<div class="close-modal">✕ إغلاق</div>`;
-                let searchHTML = `<div class="currency-search-container"><input type="text" class="currency-search" placeholder="بحث (اسم أو رمز)..."></div>`;
+            const codes = Object.keys(currencyList).filter(code => code !== 'ILS').sort();
+            let list = codes.map(code => {
+                const iconUrl = getIconUrl(code);
+                const araName = arabicNames[code] || code;
                 
-                let list = codes.map(code => {
-                    const engName = currencies[code];
-                    const araName = arabicNames[code] || engName;
-                    const iconUrl = getIconUrl(code);
-                    return `<span class="custom-option" data-value="${code}">
-                            <img src="${iconUrl}" class="flag-icon">
-                            <div class="currency-text"><strong>${code}</strong> <span class="ar-name">${araName}</span></div>
-                        </span>`;
-                }).join('');
-                return closeBtn + searchHTML + list;
-            };
+                let htmlName = `<strong>${code}</strong>`;
+                let htmlSub = ``;
 
+                if(currentLang === 'ar') {
+                    htmlName = `<strong>${code}</strong> <span class="ar-name">${araName}</span>`;
+                } else {
+                    htmlName = `<strong>${code}</strong>`;
+                    htmlSub = `<span class="en-name">${araName}</span>`;
+                }
+
+                return `<span class="custom-option" data-value="${code}">
+                        <img src="${iconUrl}" class="flag-icon">
+                        <div class="currency-text">${htmlName} ${htmlSub}</div>
+                    </span>`;
+            }).join('');
+            return closeBtn + searchHTML + list;
+        }
+
+        function initCustomSelects() {
             const listHTML = createListHTML();
             setupCustomSelect('fromSelect', listHTML, (val) => { selectedFrom = val; });
             setupCustomSelect('toSelect', listHTML, (val) => { selectedTo = val; });
-
             selectOption('fromSelect', 'USD');
             selectOption('toSelect', 'EUR'); 
         }
 
+        function initCalcCurrencySelect() {
+            const listHTML = createListHTML();
+            setupCustomSelect('calcCurrencySelect', listHTML, (val) => { selectedCalcCurrency = val; });
+            setTimeout(() => selectOption('calcCurrencySelect', 'SYP'), 100);
+        }
+
         function setupCustomSelect(elementId, htmlContent, callback) {
             const wrapper = document.getElementById(elementId);
+            if(!wrapper) return;
+            
             const trigger = wrapper.querySelector('.custom-select__trigger span:first-child');
             const optionsContainer = wrapper.querySelector('.custom-options');
             optionsContainer.innerHTML = htmlContent;
@@ -994,12 +1374,10 @@
             const openModal = () => {
                 wrapper.classList.add('open');
                 wrapper.parentElement.style.zIndex = 1000;
-                optionsContainer.scrollTop = 0;
                 const searchInput = optionsContainer.querySelector('.currency-search');
                 if(searchInput) {
                     searchInput.value = '';
-                    const options = optionsContainer.querySelectorAll('.custom-option');
-                    options.forEach(opt => opt.style.display = 'flex');
+                    optionsContainer.querySelectorAll('.custom-option').forEach(opt => opt.style.display = 'flex');
                     searchInput.focus();
                 }
             };
@@ -1016,17 +1394,15 @@
                 else openModal();
             });
 
-            wrapper.querySelector('.close-modal').addEventListener('click', closeModal);
+            wrapper.querySelector('.close-modal')?.addEventListener('click', closeModal);
             const searchInput = optionsContainer.querySelector('.currency-search');
             if(searchInput) {
                 searchInput.addEventListener('input', (e) => {
                     const term = e.target.value.toLowerCase();
-                    const options = optionsContainer.querySelectorAll('.custom-option');
-                    options.forEach(opt => {
+                    optionsContainer.querySelectorAll('.custom-option').forEach(opt => {
                         const code = opt.dataset.value.toLowerCase();
-                        const arName = opt.querySelector('.ar-name').textContent;
-                        if (code.includes(term) || arName.includes(term)) opt.style.display = 'flex';
-                        else opt.style.display = 'none';
+                        const textContent = opt.textContent.toLowerCase();
+                        opt.style.display = (code.includes(term) || textContent.includes(term)) ? 'flex' : 'none';
                     });
                 });
             }
@@ -1034,15 +1410,16 @@
             wrapper.querySelectorAll('.custom-option').forEach(option => {
                 option.addEventListener('click', function() {
                     const value = this.getAttribute('data-value');
-                    const araName = this.querySelector('.ar-name').textContent;
+                    const araName = arabicNames[value] || value;
                     const imgSrc = this.querySelector('img').src;
 
-                    trigger.innerHTML = `
-                        <div style="display:flex; align-items:center;">
-                            <img src="${imgSrc}" class="flag-icon" style="width:18px; height:13px; margin-left:8px;">
-                            ${value} - ${araName}
-                        </div>
-                    `;
+                    let htmlContent = '';
+                    if (currentLang === 'ar') {
+                        htmlContent = `<div style="display:flex; align-items:center;"><img src="${imgSrc}" class="flag-icon" style="width:18px; height:13px; margin-left:8px;">${value} - ${araName}</div>`;
+                    } else {
+                        htmlContent = `<div style="display:flex; align-items:center;"><img src="${imgSrc}" class="flag-icon" style="width:18px; height:13px; margin-left:0; margin-right:8px;">${value}</div>`;
+                    }
+                    trigger.innerHTML = htmlContent;
                     callback(value);
                     closeModal();
                 });
@@ -1051,6 +1428,7 @@
 
         function selectOption(elementId, code) {
             const wrapper = document.getElementById(elementId);
+            if(!wrapper) return;
             const option = wrapper.querySelector(`.custom-option[data-value="${code}"]`);
             if (option) option.click();
         }
@@ -1067,45 +1445,32 @@
         async function performConvert() {
             const amount = parseFloat(amountInput.value);
             if (isNaN(amount) || amount <= 0) {
-                showToast("الرجاء إدخال مبلغ صحيح");
+                showToast(currentLang === 'ar' ? "الرجاء إدخال مبلغ صحيح" : "Please enter a valid amount");
                 return;
             }
-
             resultBox.classList.remove('show');
             setLoading(true);
-
             try {
                 const rates = await fetchRatesWithFallback(selectedFrom);
-                
-                if (rates) {
-                    cachedRates = rates;
-                    if(rates['SYP']) sypRate = rates['SYP'];
-
-                    if (rates[selectedTo]) {
-                        const rate = rates[selectedTo];
-                        const total = amount * rate;
-                        setTimeout(() => {
-                            animateResult(total, rate);
-                            resultBox.classList.add('show');
-                        }, 200);
-                    } else {
-                        showToast("العملة غير مدعومة");
-                    }
+                if (rates && rates[selectedTo]) {
+                    const rate = rates[selectedTo];
+                    const total = amount * rate;
+                    setTimeout(() => {
+                        animateResult(total, rate);
+                        resultBox.classList.add('show');
+                    }, 200);
                 } else {
-                    showToast("فشل جلب البيانات من جميع المصادر");
+                    showToast(currentLang === 'ar' ? "العملة غير مدعومة" : "Currency not supported");
                 }
             } catch (error) {
-                console.error(error);
-                showToast("خطأ في الاتصال. حاول مرة أخرى.");
+                showToast(currentLang === 'ar' ? "خطأ في الاتصال" : "Connection Error");
             } finally {
                 setLoading(false);
             }
         }
 
         function animateResult(targetValue, rate) {
-            const araTarget = arabicNames[selectedTo] || selectedTo;
             rateDisplay.textContent = `1 ${selectedFrom} = ${rate.toFixed(4)} ${selectedTo}`;
-            
             const duration = 1500;
             const startValue = 0;
             const startTime = performance.now();
@@ -1115,10 +1480,7 @@
                 const progress = Math.min(elapsed / duration, 1);
                 const ease = 1 - Math.pow(1 - progress, 3);
                 const currentVal = startValue + (targetValue - startValue) * ease;
-                const formatted = new Intl.NumberFormat('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }).format(currentVal);
+                const formatted = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(currentVal);
                 resultAmount.textContent = formatted;
                 if (progress < 1) requestAnimationFrame(update);
             }
@@ -1126,15 +1488,9 @@
         }
 
         function setLoading(isLoading) {
-            if (isLoading) {
-                convertBtn.disabled = true;
-                btnText.style.display = 'none';
-                loader.style.display = 'block';
-            } else {
-                convertBtn.disabled = false;
-                btnText.style.display = 'block';
-                loader.style.display = 'none';
-            }
+            convertBtn.disabled = isLoading;
+            btnText.style.display = isLoading ? 'none' : 'block';
+            loader.style.display = isLoading ? 'block' : 'none';
         }
 
         function showToast(msg) {
@@ -1143,73 +1499,82 @@
             setTimeout(() => toast.classList.remove('active'), 3000);
         }
 
+        // === Gold Logic ===
+        function calculateGoldValue() {
+            const weight = parseFloat(document.getElementById('calc-weight').value);
+            const karat = parseInt(document.getElementById('calc-karat').value);
+            if (!weight || weight <= 0) {
+                showToast(currentLang === 'ar' ? "الرجاء إدخال الوزن" : "Please enter weight");
+                return;
+            }
+            if (currentGoldPriceUsdPerGram === 0) {
+                showToast(currentLang === 'ar' ? "جاري تحديث الأسعار..." : "Updating prices...");
+                fetchGoldAndSilver();
+                return;
+            }
+            const priceKaratUsd = (currentGoldPriceUsdPerGram * (karat / 24));
+            let exchangeRate = selectedCalcCurrency === 'USD' ? 1 : (cachedRates[selectedCalcCurrency] || 1);
+            const totalValue = weight * priceKaratUsd * exchangeRate;
+
+            const resultBox = document.getElementById('calc-result-box');
+            const resultAmount = document.getElementById('calc-result-amount');
+            const currencyLabel = document.getElementById('calc-currency-label');
+
+            let formattedValue = (['SYP','LBP','IQD'].includes(selectedCalcCurrency)) 
+                ? new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(totalValue)
+                : new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalValue);
+
+            resultAmount.textContent = formattedValue;
+            currencyLabel.textContent = selectedCalcCurrency;
+            resultBox.classList.add('show');
+        }
+
         async function fetchGoldAndSilver() {
             const loaderContainer = document.getElementById('gold-loader-container');
             const content = document.getElementById('gold-content');
-            
             loaderContainer.style.display = 'flex';
             content.style.display = 'none';
-
             let goldUsdPerOunce = null;
             let silverUsdPerOunce = null;
 
             try {
                 const rates = await fetchRatesWithFallback('USD');
-                
                 if (rates) {
-                    if(rates['SYP']) {
-                        sypRate = rates['SYP'];
-                        cachedRates = rates;
-                    }
+                    if(rates['SYP']) { sypRate = rates['SYP']; cachedRates = rates; }
                     goldUsdPerOunce = rates['XAU'];
                     silverUsdPerOunce = rates['XAG'];
                 }
-
                 if (!goldUsdPerOunce) {
                     try {
                         const paxgRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
                         const paxgData = await paxgRes.json();
                         goldUsdPerOunce = parseFloat(paxgData.price);
-                        showToast("تم تحديث الذهب عبر PAXG");
-                    } catch (e) { console.error("PAXG fallback failed"); }
+                    } catch (e) {}
                 }
-
                 if (goldUsdPerOunce) {
-                    const goldUsdPerGram = goldUsdPerOunce / 31.1035;
-                    const goldSypPerOunce = goldUsdPerOunce * sypRate;
-                    const goldSypPerGram = goldSypPerOunce / 31.1035;
-                    const gold21SypPerGram = goldSypPerGram * (21/24);
-
+                    currentGoldPriceUsdPerGram = goldUsdPerOunce / 31.1035;
                     document.getElementById('gold-ounce-usd').textContent = `$${goldUsdPerOunce.toLocaleString(undefined, {minimumFractionDigits:2})}`;
-                    document.getElementById('gold-gram-usd').textContent = `$${goldUsdPerGram.toFixed(2)}`;
+                    document.getElementById('gold-gram-usd').textContent = `$${(goldUsdPerOunce / 31.1035).toFixed(2)}`;
+                    document.getElementById('gold-ounce-syp').textContent = sypRate ? (goldUsdPerOunce * sypRate).toLocaleString('en-US', {maximumFractionDigits:0}) : '---';
+                    document.getElementById('gold-21-syp').textContent = sypRate ? ((goldUsdPerOunce * sypRate / 31.1035) * (21/24)).toLocaleString('en-US', {maximumFractionDigits:0}) : '---';
                     
-                    document.getElementById('gold-ounce-syp').textContent = sypRate ? goldSypPerOunce.toLocaleString('en-US', {maximumFractionDigits:0}) : '---';
-                    document.getElementById('gold-21-syp').textContent = sypRate ? gold21SypPerGram.toLocaleString('en-US', {maximumFractionDigits:0}) : '---';
-
                     if (silverUsdPerOunce) {
-                        const silverUsdPerGram = silverUsdPerOunce / 31.1035;
                         document.getElementById('silver-ounce-usd').textContent = `$${silverUsdPerOunce.toFixed(2)}`;
-                        document.getElementById('silver-gram-usd').textContent = `$${silverUsdPerGram.toFixed(3)}`;
+                        document.getElementById('silver-gram-usd').textContent = `$${(silverUsdPerOunce / 31.1035).toFixed(3)}`;
                         document.querySelector('.metal-card.silver').style.display = 'block';
-                    } else {
-                        document.querySelector('.metal-card.silver').style.display = 'none';
-                        showToast("الفضة غير متاحة حالياً");
-                    }
-
+                    } else document.querySelector('.metal-card.silver').style.display = 'none';
+                    
                     loaderContainer.style.display = 'none';
                     content.style.display = 'block';
-                } else {
-                    throw new Error("Gold failed");
-                }
-
+                } else throw new Error("Gold failed");
             } catch (error) {
                 loaderContainer.style.display = 'none';
                 content.style.display = 'block';
-                showToast("فشل تحديث أسعار المعادن");
-                console.error(error);
+                showToast(currentLang === 'ar' ? "فشل تحديث الأسعار" : "Price update failed");
             }
         }
 
+        // === Crypto Logic ===
         async function fetchCryptoDataArray() {
             const response = await fetch('https://api.binance.com/api/v3/ticker/price', { cache: 'no-store' });
             if(!response.ok) throw new Error("API Error");
@@ -1221,63 +1586,50 @@
         function buildCryptoHTML(coinsData) {
             const container = document.getElementById('cryptoListContainer');
             const cryptoNames = {
-                'BTC': 'بيتكوين', 'ETH': 'إيثيريوم', 'BNB': 'بينانس كوين',
-                'SOL': 'سولانا', 'XRP': 'ريبل', 'DOGE': 'دوج كوين',
-                'ADA': 'كاردانو', 'TRX': 'ترون', 'TON': 'تون كوين', 'PEPE': 'بيبي'
+                'BTC': {ar:'بيتكوين', en:'Bitcoin', es:'Bitcoin', fr:'Bitcoin', de:'Bitcoin', zh:'比特币', ja:'ビットコイン', ru:'Биткоин', pt:'Bitcoin', hi:'बिटकॉइन', it:'Bitcoin'}, 
+                'ETH': {ar:'إيثيريوم', en:'Ethereum', es:'Ethereum', fr:'Ethereum', de:'Ethereum', zh:'以太坊', ja:'イーサリアム', ru:'Эфир', pt:'Ethereum', hi:'एथेरियम', it:'Ethereum'}, 
+                'BNB': {ar:'بينانس', en:'Binance', es:'Binance', fr:'Binance', de:'Binance', zh:'币安', ja:'バイナンス', ru:'Binance', pt:'Binance', hi:'Binance', it:'Binance'},
+                'SOL': {ar:'سولانا', en:'Solana', es:'Solana', fr:'Solana', de:'Solana', zh:'索拉纳', ja:'ソラナ', ru:'Solana', pt:'Solana', hi:'सोलाना', it:'Solana'}, 
+                'XRP': {ar:'ريبل', en:'Ripple', es:'Ripple', fr:'Ripple', de:'Ripple', zh:'瑞波币', ja:'リップル', ru:'Ripple', pt:'Ripple', hi:'रिपल', it:'Ripple'}, 
+                'DOGE': {ar:'دوج كوين', en:'Dogecoin', es:'Dogecoin', fr:'Dogecoin', de:'Dogecoin', zh:'狗狗币', ja:'ドージコイン', ru:'Dogecoin', pt:'Dogecoin', hi:'डॉगकॉइन', it:'Dogecoin'},
+                'ADA': {ar:'كاردانو', en:'Cardano', es:'Cardano', fr:'Cardano', de:'Cardano', zh:'艾达币', ja:'カルダノ', ru:'Кардано', pt:'Cardano', hi:'कार्डानो', it:'Cardano'}, 
+                'TRX': {ar:'ترون', en:'Tron', es:'Tron', fr:'Tron', de:'Tron', zh:'波场', ja:'トロン', ru:'Трон', pt:'Tron', hi:'ट्रॉन', it:'Tron'}, 
+                'TON': {ar:'تون', en:'Toncoin', es:'Toncoin', fr:'Toncoin', de:'Toncoin', zh:'Toncoin', ja:'トンコイン', ru:'Toncoin', pt:'Toncoin', hi:'टनकॉइन', it:'Toncoin'}, 
+                'PEPE': {ar:'بيبي', en:'Pepe', es:'Pepe', fr:'Pepe', de:'Pepe', zh:'Pepe', ja:'Pepe', ru:'Pepe', pt:'Pepe', hi:'Pepe', it:'Pepe'}
             };
-
             let html = '';
             coinsData.forEach(coin => {
                 const symbol = coin.symbol.replace('USDT', '');
-                const name = cryptoNames[symbol] || symbol;
+                const nameObj = cryptoNames[symbol] || {ar: symbol, en: symbol};
+                const name = nameObj[currentLang] || nameObj['en'];
                 const price = parseFloat(coin.price);
                 const iconUrl = `https://assets.coincap.io/assets/icons/${symbol.toLowerCase()}@2x.png`;
-                
                 let formattedPrice = price < 1 ? price.toFixed(6) : price.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
-
-                html += `
-                <div class="crypto-item">
-                    <div class="crypto-info">
-                        <img src="${iconUrl}" class="crypto-icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/6146/6146332.png'">
-                        <div>
-                            <div class="crypto-name">${name}</div>
-                            <div class="crypto-symbol">${symbol}/USDT</div>
-                        </div>
-                    </div>
-                    <div class="crypto-price" id="crypto-price-${symbol}">$${formattedPrice}</div>
-                </div>
-                `;
+                html += `<div class="crypto-item"><div class="crypto-info"><img src="${iconUrl}" class="crypto-icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/6146/6146332.png'"><div><div class="crypto-name">${name}</div><div class="crypto-symbol">${symbol}/USDT</div></div></div><div class="crypto-price" id="crypto-price-${symbol}">$${formattedPrice}</div></div>`;
             });
-
             container.innerHTML = html;
         }
 
         async function updateCryptoPrices() {
             try {
                 const coinsData = await fetchCryptoDataArray();
-                
                 coinsData.forEach(coin => {
                     const symbol = coin.symbol.replace('USDT', '');
                     const price = parseFloat(coin.price);
                     const priceEl = document.getElementById(`crypto-price-${symbol}`);
-
                     if (priceEl) {
                         let formattedPrice = price < 1 ? price.toFixed(6) : price.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
                         priceEl.textContent = `$${formattedPrice}`;
                     }
                 });
-            } catch (error) {
-                console.warn("Auto-update failed", error);
-            }
+            } catch (error) {}
         }
 
         async function initCrypto() {
             const container = document.getElementById('cryptoListContainer');
             const loaderContainer = document.getElementById('crypto-loader-container');
             const liveIndicator = document.getElementById('crypto-live-indicator');
-
             if(cryptoInterval) clearInterval(cryptoInterval);
-
             const isAlreadyBuilt = document.getElementById('crypto-price-BTC') !== null;
 
             if (!isAlreadyBuilt) {
@@ -1286,18 +1638,16 @@
                 try {
                     const data = await fetchCryptoDataArray();
                     buildCryptoHTML(data);
-                    
                     loaderContainer.style.display = 'none';
                     liveIndicator.style.display = 'flex';
                 } catch (e) {
                     loaderContainer.style.display = 'none';
-                    container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--accent)">فشل الاتصال</div>';
+                    container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--accent)">Connection Failed</div>';
                     return;
                 }
             } else {
                 liveIndicator.style.display = 'flex';
             }
-
             cryptoInterval = setInterval(updateCryptoPrices, 100);
         }
 
