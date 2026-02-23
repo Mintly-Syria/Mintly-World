@@ -1148,8 +1148,8 @@
             const savedCalc = selectedCalcCurrency;
 
             if(currencyList && Object.keys(currencyList).length > 0) {
-                initCustomSelects(currencyList);
-                initCalcCurrencySelect(currencyList);
+                initCustomSelects();
+                initCalcCurrencySelect();
                 
                 setTimeout(() => {
                     selectOption('fromSelect', savedFrom);
@@ -1303,8 +1303,8 @@
                     Object.keys(rates).forEach(code => currencyList[code] = code);
                     cachedRates = rates;
                     sypRate = rates['SYP'];
-                    initCustomSelects(currencyList);
-                    initCalcCurrencySelect(currencyList);
+                    initCustomSelects();
+                    initCalcCurrencySelect();
                 } else throw new Error("All APIs failed");
             } catch (e) {
                 showToast(translations[currentLang]?.loading || "Error");
@@ -1382,19 +1382,25 @@
                 }
             };
 
-            wrapper.querySelector('.custom-select__trigger').addEventListener('click', function(e) {
-                e.stopPropagation();
-                document.querySelectorAll('.custom-select').forEach(el => {
-                    if (el !== wrapper) {
-                        el.classList.remove('open');
-                        el.parentElement.style.zIndex = 1;
-                    }
+            // === FIX: Only attach trigger click listener once ===
+            if (!wrapper.classList.contains('js-trigger-initialized')) {
+                wrapper.querySelector('.custom-select__trigger').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    document.querySelectorAll('.custom-select').forEach(el => {
+                        if (el !== wrapper) {
+                            el.classList.remove('open');
+                            el.parentElement.style.zIndex = 1;
+                        }
+                    });
+                    if (wrapper.classList.contains('open')) closeModal();
+                    else openModal();
                 });
-                if (wrapper.classList.contains('open')) closeModal();
-                else openModal();
-            });
+                wrapper.classList.add('js-trigger-initialized');
+            }
 
+            // Always re-attach listeners for the new dynamic content
             wrapper.querySelector('.close-modal')?.addEventListener('click', closeModal);
+            
             const searchInput = optionsContainer.querySelector('.currency-search');
             if(searchInput) {
                 searchInput.addEventListener('input', (e) => {
