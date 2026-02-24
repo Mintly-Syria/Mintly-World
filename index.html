@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mintly World - Financial Tools</title>
+    <title>Mintly World - محول العملات - أسعار الصرف</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
 
@@ -547,6 +547,59 @@
         }
         .result-box.show { opacity: 1; transform: translateY(0); }
         
+        /* === Styles for Dual Rate (USD) === */
+        .dual-result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .rate-card {
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .rate-card:hover { transform: translateY(-2px); }
+        
+        .rate-card.buy { border-color: rgba(46, 204, 113, 0.5); } /* Greenish border */
+        .rate-card.sell { border-color: rgba(231, 76, 60, 0.5); } /* Reddish border */
+
+        .rate-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .rate-value {
+            font-size: 1.4rem;
+            font-weight: 900;
+            font-family: var(--font-numbers);
+            direction: ltr;
+            line-height: 1.2;
+        }
+
+        .rate-card.buy .rate-value { color: #2ecc71; text-shadow: 0 0 10px rgba(46, 204, 113, 0.2); } /* Green */
+        .rate-card.sell .rate-value { color: #e74c3c; text-shadow: 0 0 10px rgba(231, 76, 60, 0.2); } /* Red */
+
+        /* Single result style */
+        .single-result-container {
+            width: 100%;
+            padding: 10px 0;
+        }
+
         .result-amount {
             font-size: 2.2rem; 
             font-weight: 900;
@@ -557,6 +610,7 @@
             font-family: var(--font-numbers);
             word-break: break-all;
         }
+
         .rate-display {
             font-size: 0.8rem;
             color: var(--text-muted);
@@ -566,6 +620,7 @@
             border: 1px solid var(--border);
             display: inline-block;
             margin-top: 5px;
+            direction: ltr;
         }
 
         .refresh-btn {
@@ -750,7 +805,7 @@
                 <div class="content-wrapper">
                     <div class="input-group">
                         <label data-i18n="label_amount">المبلغ (Amount)</label>
-                        <input type="number" id="amount" class="styled-input" value="1" placeholder="0.00" lang="en" inputmode="decimal">
+                        <input type="number" id="amount" class="styled-input" value="100" placeholder="0.00" lang="en" inputmode="decimal">
                     </div>
 
                     <div class="input-group">
@@ -792,8 +847,28 @@
                 </button>
 
                 <div class="result-box" id="resultBox">
-                    <div class="result-amount" id="resultAmount" lang="en">0.00</div>
-                    <div class="rate-display" id="rateDisplay" lang="en">1 USD = --- USD</div>
+                    
+                    <!-- النتيجة المزدوجة (للدولار فقط) -->
+                    <div id="dualResult" style="display: none; width: 100%;">
+                        <div class="dual-result-grid">
+                            <div class="rate-card sell">
+                                <span class="rate-label" data-i18n="price_sell">سعر المبيع</span>
+                                <span class="rate-value" id="resSell">0.00</span>
+                            </div>
+                            <div class="rate-card buy">
+                                <span class="rate-label" data-i18n="price_buy">سعر الشراء</span>
+                                <span class="rate-value" id="resBuy">0.00</span>
+                            </div>
+                        </div>
+                        <div class="rate-display" id="dualRateDisplay" lang="en">1 USD = --- USD</div>
+                    </div>
+
+                    <!-- النتيجة المفردة (للبقية) -->
+                    <div id="singleResult" style="display: none; width: 100%;" class="single-result-container">
+                        <div class="result-amount" id="resultAmount" lang="en">0.00</div>
+                        <div class="rate-display" id="rateDisplay" lang="en">1 USD = --- USD</div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -965,7 +1040,8 @@
                 gram_24_usd: "غرام 24 (دولار)", ounce_syp: "أونصة (ليرة سورية)",
                 gram_21_syp: "غرام 21 (ليرة سورية)", silver_title: "الفضة (Silver)",
                 gram_usd: "غرام (دولار)", disclaimer: "الأسعار تُجلب من مصادر دقيقة.",
-                live_prices: "الأسعار تتحدث تلقائياً"
+                live_prices: "الأسعار تتحدث تلقائياً",
+                price_buy: "شراء (للعميل)", price_sell: "مبيع (من العميل)"
             },
             en: {
                 nav_currencies: "Currencies", nav_gold: "Gold", nav_crypto: "Crypto",
@@ -979,7 +1055,8 @@
                 gram_24_usd: "Gram 24 (USD)", ounce_syp: "Ounce (SYP)",
                 gram_21_syp: "Gram 21 (SYP)", silver_title: "Silver",
                 gram_usd: "Gram (USD)", disclaimer: "Prices are fetched from reliable sources.",
-                live_prices: "Live Prices Updating"
+                live_prices: "Live Prices Updating",
+                price_buy: "Buy Rate (To You)", price_sell: "Sell Rate (From You)"
             },
             es: {
                 nav_currencies: "Monedas", nav_gold: "Oro", nav_crypto: "Cripto",
@@ -993,7 +1070,8 @@
                 gram_24_usd: "Gramo 24 (USD)", ounce_syp: "Onza (SYP)",
                 gram_21_syp: "Gramo 21 (SYP)", silver_title: "Plata",
                 gram_usd: "Gramo (USD)", disclaimer: "Los precios se obtienen de fuentes fiables.",
-                live_prices: "Actualización en vivo"
+                live_prices: "Actualización en vivo",
+                price_buy: "Precio Compra", price_sell: "Precio Venta"
             },
             fr: {
                 nav_currencies: "Devises", nav_gold: "Or", nav_crypto: "Crypto",
@@ -1007,7 +1085,8 @@
                 gram_24_usd: "Gramme 24 (USD)", ounce_syp: "Once (SYP)",
                 gram_21_syp: "Gramme 21 (SYP)", silver_title: "Argent",
                 gram_usd: "Gramme (USD)", disclaimer: "Les prix proviennent de sources fiables.",
-                live_prices: "Mise à jour en direct"
+                live_prices: "Mise à jour en direct",
+                price_buy: "Taux d'Achat", price_sell: "Taux de Vente"
             },
             de: {
                 nav_currencies: "Währungen", nav_gold: "Gold", nav_crypto: "Krypto",
@@ -1021,7 +1100,8 @@
                 gram_24_usd: "Gramm 24 (USD)", ounce_syp: "Unze (SYP)",
                 gram_21_syp: "Gramm 21 (SYP)", silver_title: "Silber",
                 gram_usd: "Gramm (USD)", disclaimer: "Preise werden von zuverlässigen Quellen bezogen.",
-                live_prices: "Live-Aktualisierung"
+                live_prices: "Live-Aktualisierung",
+                price_buy: "Kurskauf", price_sell: "Verkaufskurs"
             },
             zh: {
                 nav_currencies: "货币", nav_gold: "黄金", nav_crypto: "加密货币",
@@ -1035,7 +1115,8 @@
                 gram_24_usd: "克 24（美元）", ounce_syp: "盎司（叙利亚镑）",
                 gram_21_syp: "克 21（叙利亚镑）", silver_title: "白银",
                 gram_usd: "克（美元）", disclaimer: "价格取自可靠来源。",
-                live_prices: "实时价格更新"
+                live_prices: "实时价格更新",
+                price_buy: "买入价", price_sell: "卖出价"
             },
             ja: {
                 nav_currencies: "通貨", nav_gold: "金", nav_crypto: "暗号資産",
@@ -1049,7 +1130,8 @@
                 gram_24_usd: "グラム 24 (USD)", ounce_syp: "オンス (SYP)",
                 gram_21_syp: "グラム 21 (SYP)", silver_title: "シルバー",
                 gram_usd: "グラム (USD)", disclaimer: "価格は信頼できるソースから取得されます。",
-                live_prices: "リアルタイム更新"
+                live_prices: "リアルタイム更新",
+                price_buy: "買いレート", price_sell: "売りレート"
             },
             ru: {
                 nav_currencies: "Валюты", nav_gold: "Золото", nav_crypto: "Крипто",
@@ -1063,7 +1145,8 @@
                 gram_24_usd: "Грамм 24 (USD)", ounce_syp: "Унция (SYP)",
                 gram_21_syp: "Грамм 21 (SYP)", silver_title: "Серебро",
                 gram_usd: "Грамм (USD)", disclaimer: "Цены берутся из надежных источников.",
-                live_prices: "Обновление в реальном времени"
+                live_prices: "Обновление в реальном времени",
+                price_buy: "Курс покупки", price_sell: "Курс продажи"
             },
             pt: {
                 nav_currencies: "Moedas", nav_gold: "Ouro", nav_crypto: "Cripto",
@@ -1077,7 +1160,8 @@
                 gram_24_usd: "Grama 24 (USD)", ounce_syp: "Onça (SYP)",
                 gram_21_syp: "Grama 21 (SYP)", silver_title: "Prata",
                 gram_usd: "Grama (USD)", disclaimer: "Os preços são obtidos de fontes confiáveis.",
-                live_prices: "Atualização ao vivo"
+                live_prices: "Atualização ao vivo",
+                price_buy: "Taxa de Compra", price_sell: "Taxa de Venda"
             },
             hi: {
                 nav_currencies: "मुद्राएं", nav_gold: "सोना", nav_crypto: "क्रिप्टो",
@@ -1091,7 +1175,8 @@
                 gram_24_usd: "ग्राम 24 (USD)", ounce_syp: "औंस (SYP)",
                 gram_21_syp: "ग्राम 21 (SYP)", silver_title: "चांदी",
                 gram_usd: "ग्राम (USD)", disclaimer: "कीमतें विश्वसनीय स्रोतों से ली गई हैं।",
-                live_prices: "लाइव अपडेट"
+                live_prices: "लाइव अपडेट",
+                price_buy: "खरीद दर", price_sell: "बिक्री दर"
             },
             it: {
                 nav_currencies: "Valute", nav_gold: "Oro", nav_crypto: "Cripto",
@@ -1105,7 +1190,8 @@
                 gram_24_usd: "Grammo 24 (USD)", ounce_syp: "Oncia (SYP)",
                 gram_21_syp: "Grammo 21 (SYP)", silver_title: "Argento",
                 gram_usd: "Grammo (USD)", disclaimer: "I prezzi vengono recuperati da fonti affidabili.",
-                live_prices: "Aggiornamento dal vivo"
+                live_prices: "Aggiornamento dal vivo",
+                price_buy: "Tasso di Acquisto", price_sell: "Tasso di Vendita"
             }
         };
 
@@ -1237,8 +1323,15 @@
         const loader = document.getElementById('loader');
         const btnText = document.querySelector('#convertBtn .btn-text');
         const resultBox = document.getElementById('resultBox');
+        
+        // Result Elements
+        const singleResultDiv = document.getElementById('singleResult');
+        const dualResultDiv = document.getElementById('dualResult');
         const resultAmount = document.getElementById('resultAmount');
+        const resBuy = document.getElementById('resBuy');
+        const resSell = document.getElementById('resSell');
         const rateDisplay = document.getElementById('rateDisplay');
+        const dualRateDisplay = document.getElementById('dualRateDisplay');
         const toast = document.getElementById('toast');
 
         async function fetchRatesWithFallback(baseCurrency) {
@@ -1348,8 +1441,8 @@
             const listHTML = createListHTML();
             setupCustomSelect('fromSelect', listHTML, (val) => { selectedFrom = val; });
             setupCustomSelect('toSelect', listHTML, (val) => { selectedTo = val; });
-            selectOption('fromSelect', 'USD');
-            selectOption('toSelect', 'EUR'); 
+            selectOption('fromSelect', 'USD'); // Default From USD
+            selectOption('toSelect', 'EUR');    // Default To EUR
         }
 
         function initCalcCurrencySelect() {
@@ -1460,9 +1553,37 @@
                 const rates = await fetchRatesWithFallback(selectedFrom);
                 if (rates && rates[selectedTo]) {
                     const rate = rates[selectedTo];
-                    const total = amount * rate;
+                    const totalMarket = amount * rate;
+                    
                     setTimeout(() => {
-                        animateResult(total, rate);
+                        // === التعديل الجديد: التحقق من وجود الدولار في أي طرف ===
+                        // الشرط: إذا كانت (من) دولار أو (إلى) دولار
+                        if (selectedFrom === 'USD' || selectedTo === 'USD') {
+                            
+                            // إخفاء النتيجة المفردة وإظهار المزدوجة
+                            singleResultDiv.style.display = 'none';
+                            dualResultDiv.style.display = 'block';
+
+                            // حساب الفرق (Spread)
+                            const spread = 0.02; // 2% فرق لجعل الفرق واضحاً
+                            
+                            // النتيجة الأقل (المبيع/الصرافة تشتري منك)
+                            const totalLow = totalMarket * (1 - spread/2);
+                            
+                            // النتيجة الأعلى (الشراء/الصرافة تبيع لك)
+                            const totalHigh = totalMarket * (1 + spread/2);
+                            
+                            resSell.textContent = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalLow);
+                            resBuy.textContent = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalHigh);
+                            
+                            dualRateDisplay.textContent = `1 ${selectedFrom} ≈ ${(rate * (1 - spread/2)).toFixed(4)} - ${(rate * (1 + spread/2)).toFixed(4)} ${selectedTo}`;
+                        } else {
+                            // إظهار النتيجة العادية (لعملات بدون دولار)
+                            singleResultDiv.style.display = 'block';
+                            dualResultDiv.style.display = 'none';
+                            animateResult(totalMarket, rate);
+                        }
+                        
                         resultBox.classList.add('show');
                     }, 200);
                 } else {
