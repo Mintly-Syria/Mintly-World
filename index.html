@@ -1282,7 +1282,7 @@
         ];
 
         let selectedFrom = 'USD';
-        let selectedTo = 'EUR';
+        let selectedTo = 'SYP'; // Changed to SYP to show the feature immediately
         let selectedCalcCurrency = 'SYP'; 
         let cachedRates = {}; 
         let sypRate = 0; 
@@ -1442,7 +1442,7 @@
             setupCustomSelect('fromSelect', listHTML, (val) => { selectedFrom = val; });
             setupCustomSelect('toSelect', listHTML, (val) => { selectedTo = val; });
             selectOption('fromSelect', 'USD'); // Default From USD
-            selectOption('toSelect', 'EUR');    // Default To EUR
+            selectOption('toSelect', 'SYP');    // Default To SYP (To show feature)
         }
 
         function initCalcCurrencySelect() {
@@ -1549,47 +1549,68 @@
             }
             resultBox.classList.remove('show');
             setLoading(true);
+
             try {
+                // Fetch rates relative to the 'From' currency
                 const rates = await fetchRatesWithFallback(selectedFrom);
+
                 if (rates && rates[selectedTo]) {
-                    const rate = rates[selectedTo];
+                    const rate = rates[selectedTo]; // 1 From = X To
                     const totalMarket = amount * rate;
                     
                     setTimeout(() => {
-                        // === التعديل الجديد: التحقق من وجود الدولار في أي طرف ===
-                        // الشرط: إذا كانت (من) دولار أو (إلى) دولار
-                        if (selectedFrom === 'USD' || selectedTo === 'USD') {
-                            
-                            // إخفاء النتيجة المفردة وإظهار المزدوجة
+                        // === MODIFICATION: STRICT USD CHECK ===
+                        // Show Buy/Sell ONLY if converting FROM USD TO another currency
+                        // (selectedTo !== 'USD' ensures we don't show it for USD->USD)
+                        const isConvertingFromUSD = (selectedFrom === 'USD' && selectedTo !== 'USD');
+
+                        if (isConvertingFromUSD) {
+                            // Hide Single, Show Dual
                             singleResultDiv.style.display = 'none';
                             dualResultDiv.style.display = 'block';
 
-                            // حساب الفرق (Spread)
-                            const spread = 0.02; // 2% فرق لجعل الفرق واضحاً
+                            // === Syrian Market Spread Logic ===
+                            let spread = 0.015; // Default 1.5% for stable currencies
+
+                            if (selectedTo === 'SYP') {
+                                spread = 0.025; // 2.5% Spread for Syrian Pound
+                            } else if (selectedTo === 'TRY') {
+                                spread = 0.02; // 2% Spread for Turkish Lira
+                            } else if (selectedTo === 'LBP') {
+                                spread = 0.03; // 3% Spread for Lebanese Pound
+                            }
+
+                            // "Sell" (You sell USD): You get LESS
+                            const totalSell = totalMarket * (1 - spread/2);
                             
-                            // النتيجة الأقل (المبيع/الصرافة تشتري منك)
-                            const totalLow = totalMarket * (1 - spread/2);
+                            // "Buy" (You buy currency): You pay MORE
+                            const totalBuy = totalMarket * (1 + spread/2);
+
+                            const formatNum = (num) => new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+
+                            resSell.textContent = formatNum(totalSell);
+                            resBuy.textContent = formatNum(totalBuy);
                             
-                            // النتيجة الأعلى (الشراء/الصرافة تبيع لك)
-                            const totalHigh = totalMarket * (1 + spread/2);
-                            
-                            resSell.textContent = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalLow);
-                            resBuy.textContent = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(totalHigh);
-                            
-                            dualRateDisplay.textContent = `1 ${selectedFrom} ≈ ${(rate * (1 - spread/2)).toFixed(4)} - ${(rate * (1 + spread/2)).toFixed(4)} ${selectedTo}`;
+                            // Update Rate Display Text
+                            const lowRate = rate * (1 - spread/2);
+                            const highRate = rate * (1 + spread/2);
+                            dualRateDisplay.textContent = `1 ${selectedFrom} ≈ ${lowRate.toFixed(4)} - ${highRate.toFixed(4)} ${selectedTo}`;
+
                         } else {
-                            // إظهار النتيجة العادية (لعملات بدون دولار)
+                            // Standard conversion for everything else (Non-USD or To-USD)
                             singleResultDiv.style.display = 'block';
                             dualResultDiv.style.display = 'none';
                             animateResult(totalMarket, rate);
                         }
-                        
+
                         resultBox.classList.add('show');
                     }, 200);
+
                 } else {
                     showToast(currentLang === 'ar' ? "العملة غير مدعومة" : "Currency not supported");
                 }
             } catch (error) {
+                console.error(error);
                 showToast(currentLang === 'ar' ? "خطأ في الاتصال" : "Connection Error");
             } finally {
                 setLoading(false);
